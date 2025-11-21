@@ -4,7 +4,7 @@ import { ChatContext } from '../../context/ChatContext'
 import { userContext } from '../../context/AuthContext'
 
 
-const Rightsidebar = () => {
+const About = ({setShowAbout}) => {
   const {selectedUser, messages}= useContext(ChatContext)
   const {logout, onlineUsers}= useContext(userContext)
   const [msgImages, setmsgImages] = useState([])
@@ -16,9 +16,11 @@ const Rightsidebar = () => {
     )
   
   }, [messages])
+ 
   
   return selectedUser && (
-    <div className={` bg-[#8185B2]/10 text-white w-full relative overflow-y-scroll ${selectedUser ? "max-md:hidden" : ""} `}>
+    <div className={` bg-[#8185B2]/10 backdrop-blur-md text-white w-full relative overflow-y-scroll  `}>
+        <div className='py-2 flex justify-end px-3'><img  onClick={()=>setShowAbout(false)} className='max-w-7' src={assets.arrow_icon} alt="arrow icon" /></div>
 
       <div className='flex pt-10 flex-col items-center gap-2 text-sx  font-light'>
         <img src={selectedUser?.profilePic || assets.avatar_icon} alt=""
@@ -49,7 +51,7 @@ const Rightsidebar = () => {
       </div>
 
       
-        <button onClick={()=> logout()} className='absolute bottom-1 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-400 to-violet-600 text-white border-none text-sm font-light py-2 px-20 rounded-full cursor-pointer'>Logout</button>
+        <button onClick={()=> logout()} className='absolute bottom-3 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-400 to-violet-600 text-white border-none text-sm font-light py-2 px-20 rounded-full cursor-pointer'>Logout</button>
     
 
 
@@ -57,4 +59,4 @@ const Rightsidebar = () => {
   )
 }
 
-export default Rightsidebar
+export default About

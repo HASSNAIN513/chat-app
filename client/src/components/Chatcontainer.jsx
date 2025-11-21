@@ -4,9 +4,13 @@ import { formatmessageDate } from '../lib/utils'
 import { ChatContext } from '../../context/ChatContext'
 import { userContext } from '../../context/AuthContext'
 import toast from 'react-hot-toast'
+import { useIsMobile } from '../lib/utils'
+import { Navigate } from 'react-router-dom'
 
-const Chatcontainer = () => {
 
+const Chatcontainer = ({setShowAbout}) => {
+   
+    const isMobile = useIsMobile();
     const { selectedUser, setselectedUser, messages, getMessages, sendMessage } = useContext(ChatContext)
     const { authUser,onlineUsers } = useContext(userContext)
     const [input, setinput] = useState('')
@@ -51,13 +55,15 @@ const Chatcontainer = () => {
         }
     }, [messages])
 
+   
+
     return selectedUser ?
         (<div className='h-full overflow-scroll relative backdrop-blur-lg'>
 
             {/* top area */}
             <div className='flex items-center gap-3 py-3 mx-4 border-b border-stone-500'>
                 <img src={selectedUser.profilePic|| assets.avatar_icon} alt="" className='w-8 rounded-full aspect-[1/1] object-cover ' />
-                <div className='flex gap-2 items-center flex-1'>
+                <div onClick={() => isMobile && setShowAbout(true)} className='flex gap-2 items-center flex-1'>
                     <p className='text-lg text-white '>{selectedUser.fullName}</p>
                     <span className={`w-2 h-2 rounded-full ${onlineUsers.includes(selectedUser._id)? "bg-green-500": "bg-gray-500"} `}></span>
 
@@ -122,6 +128,10 @@ const Chatcontainer = () => {
                 <p className='text-lg font-medium text-white'>Chat anytime, anywhere</p>
             </div>
         )
+       
+        
+   
+    
 
 }
 
