@@ -13,6 +13,7 @@ export const userContext = createContext()
 
 export const AuthProvider = ({ children }) => {
     const [token, settoken] = useState(localStorage.getItem("token") || null);
+    const [loading, setloading] = useState(true)
     const [authUser, setauthUser] = useState(null);
     const [onlineUsers, setonlineUsers] = useState([])
     const [socket, setsocket] = useState(null)
@@ -20,14 +21,21 @@ export const AuthProvider = ({ children }) => {
     // check the user and set the dat then connect to socket
     const checkAuth = async () => {
         try {
+           
             const { data } = await axios.get("/api/auth/check")
             if (data?.success) {
                 setauthUser(data?.user)
-                connectSocket(data?.user)
+                 connectSocket(data?.user)
+                
+                
+            }else{
+                setauthUser(null)
             }
+
         } catch (error) {
             toast.error(error.message)
         }
+        setloading(false)
     }
 
     // login funxtion to handle authenticate and socket connection 
@@ -36,20 +44,25 @@ export const AuthProvider = ({ children }) => {
             const { data } = await axios.post(`/api/auth/${state}`, credentials)
             if (data.success) {
                 setauthUser(data.userData)
+                
                 connectSocket(data.userData)
                 axios.defaults.headers.common["token"] = data.token
                 settoken(data.token)
                 localStorage.setItem("token", data.token)
                 toast.success(data.message)
+            }else{
+                setauthUser(null)
             }
         } catch (error) {
             toast.error(error.message)
         }
+        setloading(false)
     }
 
     // logout and  clear the user data and socket
     const logout = () => {
         setauthUser(null)
+       
         setonlineUsers([])
         setsocket(null)
         settoken(null)
@@ -69,6 +82,7 @@ export const AuthProvider = ({ children }) => {
                 toast.success("Profile updated successfully")
 
             }
+            
         } catch (error) {
             toast.error(error.message)
         }
@@ -93,7 +107,9 @@ export const AuthProvider = ({ children }) => {
             axios.defaults.headers.common["token"] = token
         }
         checkAuth()
-
+        
+        
+        
 
     }, [])
 
@@ -105,6 +121,7 @@ export const AuthProvider = ({ children }) => {
         socket,
         login,
         logout,
+        loading,
         updateProfile
 
     }
