@@ -51,4 +51,10 @@ app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 
-server.listen(port, () => console.log(`Server running on port ${port}`))
+if(process.env.NODE_ENV!=="production"){
+
+  server.listen(port, () => console.log(`Server running on port ${port}`))
+}
+
+// export server for production use on vercel
+export default server
